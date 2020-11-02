@@ -8,7 +8,7 @@ module calculator_top(
 	output [2:0] Enable, //7-segment enable bits
 	output [7:0] LED,
 	input [3:0] IO_P4_ROW,
-	input [3:0] IO_P4_COL
+	output [3:0] IO_P4_COL //with PULLUP option
  );
  
  //signals
@@ -17,6 +17,8 @@ module calculator_top(
  
  reg [9:0] counter;
  reg [19:0] clk_div_counter;
+ 
+ wire [3:0] keypad_out;
  
  //components
  
@@ -44,11 +46,19 @@ seven_seg_driver sseg_driver(
 		.Clk12Mhz(Clk)
  );
 	
- bin2bcd_10bit inst_bin2bcd (
-		.binIN(counter),
+ bin2bcd_10bit inst_bin2bcd(
+		.binIN({6'b000000, keypad_out}),
 		.ones(ones),
 		.tens(tens),
 		.hundreds(hundreds)
+ );
+ 
+ keypad_encoder inst_keypad_encoder(
+		.clk(Clk),
+		.reset(reset),
+		.rows(4'b0010),
+		.columns(4'b0010),
+		.keycode_output(keypad_out)
  );
   
 always @(posedge Clk)
@@ -61,5 +71,6 @@ end
 
 assign LED = ~counter[7:0];
 assign led_ext = counter[7:0];
+assign IO_P4_COL = 4'b0001;
 
 endmodule
