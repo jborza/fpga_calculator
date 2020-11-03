@@ -21,6 +21,10 @@ module calculator_top(
  reg [19:0] clk_div_counter;
  
  wire [3:0] keypad_out;
+ wire [3:0] keypad_poller_row;
+ wire [3:0] keypad_poller_column;
+ 
+ wire keypad_key_pressed;
  
  //components
  
@@ -58,10 +62,21 @@ seven_seg_driver sseg_driver(
  keypad_encoder inst_keypad_encoder(
 		.clk(Clk),
 		.reset(~reset),
-		.rows(IO_P4_ROW),
-		.columns(~DPSwitch),
+		.rows(keypad_poller_row),
+		.columns(keypad_poller_column),
 		.keycode_output(keypad_out)
  );
+ 
+ keypad_poller inst_poller (
+    .clk(Clk), 
+    .reset(~reset), 
+    .keypad_row_in(IO_P4_ROW), 
+    .keypad_col_out(keypad_poller_column), 
+    .row_out(keypad_poller_row), 
+    .key_pressed(keypad_key_pressed)
+    );
+
+
   
 always @(posedge Clk)
 begin
@@ -71,9 +86,9 @@ begin
 	end
 end
 
-assign LED = {~reset, 3'b000, ~DPSwitch};
+assign LED = {~reset, 1'b0, keypad_key_pressed, 1'b0, keypad_poller_column};
 assign led_ext = IO_P4_ROW;
-assign led_ext2 = ~IO_P4_ROW;
-assign IO_P4_COL = ~DPSwitch;
+assign led_ext2 = keypad_poller_row;
+assign IO_P4_COL = keypad_poller_column;
 
 endmodule

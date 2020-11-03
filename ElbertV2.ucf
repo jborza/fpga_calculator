@@ -80,10 +80,10 @@ CONFIG VCCAUX = "3.3" ;
 ##                                   DP Switches
 #####################################################################################################
 #
-    NET "reset"        LOC = P70   | PULLUP  | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
-#    NET "DPSwitch[1]"        LOC = P69   | PULLUP  | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
-#    NET "DPSwitch[2]"        LOC = P68   | PULLUP  | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
-#    NET "DPSwitch[3]"        LOC = P64   | PULLUP  | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
+    NET "DPSwitch[0]"        LOC = P70   | PULLUP  | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
+    NET "DPSwitch[1]"        LOC = P69   | PULLUP  | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
+    NET "DPSwitch[2]"        LOC = P68   | PULLUP  | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
+    NET "DPSwitch[3]"        LOC = P64   | PULLUP  | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
 #    NET "DPSwitch[4]"        LOC = P63   | PULLUP  | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
 #    NET "DPSwitch[5]"        LOC = P60   | PULLUP  | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
 #    NET "DPSwitch[6]"        LOC = P59   | PULLUP  | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
@@ -93,7 +93,7 @@ CONFIG VCCAUX = "3.3" ;
 ##                                   Switches
 #####################################################################################################
 #
-#    NET "Switch[0]"          LOC = P80   | PULLUP  | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
+    NET "reset"          LOC = P80   | PULLUP  | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
 #    NET "Switch[1]"          LOC = P79   | PULLUP  | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
 #    NET "Switch[2]"          LOC = P78   | PULLUP  | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
 #    NET "Switch[3]"          LOC = P77   | PULLUP  | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
@@ -120,14 +120,14 @@ CONFIG VCCAUX = "3.3" ;
 ## HEADER P6
 #####################################################################################################
 #   
-#    NET "IO_P6[0]"           LOC = P19   | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
-#    NET "IO_P6[1]"           LOC = P21   | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
-#    NET "IO_P6[2]"           LOC = P18   | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
-#    NET "IO_P6[3]"           LOC = P20   | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
-#    NET "IO_P6[4]"           LOC = P15   | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
-#    NET "IO_P6[5]"           LOC = P16   | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
-#    NET "IO_P6[6]"           LOC = P12   | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
-#    NET "IO_P6[7]"           LOC = P13   | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
+    NET "led_ext2[0]"           LOC = P19   | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
+    NET "led_ext2[1]"           LOC = P21   | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
+    NET "led_ext2[2]"           LOC = P18   | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
+    NET "led_ext2[3]"           LOC = P20   | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
+    NET "led_ext2[4]"           LOC = P15   | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
+    NET "led_ext2[5]"           LOC = P16   | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
+    NET "led_ext2[6]"           LOC = P12   | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
+    NET "led_ext2[7]"           LOC = P13   | IOSTANDARD = LVCMOS33 | SLEW = SLOW | DRIVE = 12;
 #
 #####################################################################################################
 ## HEADER P2
