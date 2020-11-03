@@ -25,6 +25,9 @@ module calculator_top(
  wire [3:0] keypad_poller_column;
  
  wire keypad_key_pressed;
+ reg keypad_key_pressed_prev;
+ 
+ reg [7:0] keypress_counter;
  
  //components
  
@@ -84,11 +87,18 @@ begin
 	if(clk_div_counter == 0) begin
 		counter <= counter + 1;		
 	end
+	//keypress counter
+	if (keypad_key_pressed && (keypad_key_pressed  != keypad_key_pressed_prev))
+	begin
+		keypress_counter <= keypress_counter + 1;
+		//TODO increment my number register
+	end
+	keypad_key_pressed_prev <= keypad_key_pressed;
 end
 
 assign LED = {~reset, 1'b0, keypad_key_pressed, 1'b0, keypad_poller_column};
 assign led_ext = IO_P4_ROW;
-assign led_ext2 = keypad_poller_row;
+assign led_ext2 = keypress_counter;
 assign IO_P4_COL = keypad_poller_column;
 
 endmodule
