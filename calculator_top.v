@@ -48,12 +48,15 @@ localparam [3:0]
 	state_display_arg = 4'd5,
 	state_calculate = 4'd6,
 	state_display_result = 4'd7,
-	state_clear = 4'd8;
+	state_clear = 4'd8,
+	state_dividing = 4'd9,
+	state_divide_pressed = 4'd10;
 	
 localparam [1:0]
 	OP_PLUS = 2'd0,
 	OP_MINUS = 2'd1,
-	OP_MULTIPLY = 2'd2;
+	OP_MULTIPLY = 2'd2,
+	OP_DIVIDE = 2'd3;
   
  
  //components
@@ -105,9 +108,24 @@ seven_seg_driver sseg_driver(
     .row_out(keypad_poller_row), 
     .key_pressed(keypad_key_pressed)
     );
+	 
+reg [9:0] numerator;
+reg [9:0] denominator;
+reg divider_start;
+wire [9:0] quotient;
+wire [9:0] remainder;
+wire divider_done;
 
-
-	
+integer_divider #(10) inst_divider (
+    .clk(Clk), 
+    .reset(~reset), 
+    .numerator(numerator), 
+    .denominator(denominator), 
+    .start(divider_start), 
+    .quotient(quotient), 
+    .remainder(remainder), 
+    .done(divider_done)
+    );
 
 always @(posedge Clk or negedge reset)
 begin
@@ -141,6 +159,8 @@ begin
 							state <= state_minus_pressed;
 						else if(keypad_out == 4'hB) //multiply (B)
 							state <= state_multiply_pressed;
+						else if(keypad_out == 4'hD) //divide (D)
+							state <= state_divide_pressed;
 					end
 					keypad_key_pressed_prev <= keypad_key_pressed;
 				end
@@ -168,17 +188,39 @@ begin
 					reg_operator_next <= OP_MULTIPLY;
 					state <= state_calculate;
 				end
+			state_divide_pressed:
+				begin
+					reg_operator_next <= OP_DIVIDE;
+					state <= state_calculate;
+				end
 			state_calculate:
 				begin
-					if(reg_operator == OP_PLUS)
+					if(reg_operator == OP_PLUS) begin
 						reg_result <= reg_result + reg_arg;
-					else if(reg_operator == OP_MINUS)
+						state <= state_display_result;
+					end else if(reg_operator == OP_MINUS) begin
 						reg_result <= reg_result - reg_arg;
-					else //mult
+						state <= state_display_result;
+					end else if(reg_operator == OP_MULTIPLY) begin
 						reg_result <= reg_result * reg_arg;
+						state <= state_display_result;
+					end else begin //OP_DIVIDE
+						divider_start <= 1'b1;
+						numerator <= reg_result;
+						denominator <= reg_arg;
+						state <= state_dividing;
+					end
 					reg_operator <= reg_operator_next;
 					reg_arg <= 0;
-					state <= state_display_result;
+				end
+			state_dividing:
+				begin
+					divider_start <= 1'b0;
+					if(divider_done)
+					begin
+						reg_result <= quotient;
+						state <= state_display_result;
+					end
 				end
 			state_display_arg: 
 				begin
@@ -195,7 +237,7 @@ begin
 end
 
 assign LED = {~reset, 1'b0, keypad_key_pressed, 1'b0, state};
-assign led_ext = IO_P4_ROW;
+assign led_ext = quotient[7:0];
 assign led_ext2 = keypress_counter;
 assign IO_P4_COL = keypad_poller_column;
 

@@ -42,6 +42,7 @@ begin
 			n <= numerator;
 			d <= denominator;
 			busy <= 1'b1;
+			done <= 1'b0;
 		end 
 		else if(busy) begin
 			if(n >= d) begin
