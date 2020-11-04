@@ -8,7 +8,6 @@ module calculator_top(
 	output [7:0] LED,
 	input [3:0] IO_P4_ROW,
 	output [3:0] IO_P4_COL, //with PULLUP option,
-	input [3:0] DPSwitch,
 	output [7:0] led_ext,
 	output [7:0] led_ext2
  );
@@ -34,11 +33,27 @@ module calculator_top(
  reg [3:0] state;
 
 //calculator registers
-reg [15:0] reg_arg;
-reg [15:0] reg_result;
-reg [15:0] reg_display;
-reg reg_operator;
-reg reg_operator_next;
+reg [9:0] reg_arg;
+reg [9:0] reg_result;
+reg [9:0] reg_display;
+reg [1:0] reg_operator;
+reg [1:0] reg_operator_next;
+
+localparam [3:0] 
+	state_read_digit = 4'd0,
+	state_digit_pressed = 4'd1,
+	state_plus_pressed = 4'd2,
+	state_minus_pressed = 4'd3,	
+	state_multiply_pressed = 4'd4,
+	state_display_arg = 4'd5,
+	state_calculate = 4'd6,
+	state_display_result = 4'd7,
+	state_clear = 4'd8;
+	
+localparam [1:0]
+	OP_PLUS = 2'd0,
+	OP_MINUS = 2'd1,
+	OP_MULTIPLY = 2'd2;
   
  
  //components
@@ -91,19 +106,7 @@ seven_seg_driver sseg_driver(
     .key_pressed(keypad_key_pressed)
     );
 
-localparam [3:0] 
-	state_read_digit = 4'd0,
-	state_digit_pressed = 4'd1,
-	state_plus_pressed = 4'd2,
-	state_minus_pressed = 4'd3,
-	state_display_arg = 4'd4,
-	state_calculate = 4'd5,
-	state_display_result = 4'd6,
-	state_clear = 4'd7;
-	
-localparam 
-	OP_PLUS = 1'b0,
-	OP_MINUS = 1'b1;
+
 	
 
 always @(posedge Clk or negedge reset)
@@ -136,6 +139,8 @@ begin
 							state <= state_plus_pressed;
 						else if(keypad_out == 4'hF) //minus
 							state <= state_minus_pressed;
+						else if(keypad_out == 4'hB) //multiply (B)
+							state <= state_multiply_pressed;
 					end
 					keypad_key_pressed_prev <= keypad_key_pressed;
 				end
@@ -158,12 +163,19 @@ begin
 					reg_operator_next <= OP_MINUS;
 					state <= state_calculate;
 				end
+			state_multiply_pressed:
+				begin
+					reg_operator_next <= OP_MULTIPLY;
+					state <= state_calculate;
+				end
 			state_calculate:
 				begin
 					if(reg_operator == OP_PLUS)
 						reg_result <= reg_result + reg_arg;
-					else //OP_MINUS
+					else if(reg_operator == OP_MINUS)
 						reg_result <= reg_result - reg_arg;
+					else //mult
+						reg_result <= reg_result * reg_arg;
 					reg_operator <= reg_operator_next;
 					reg_arg <= 0;
 					state <= state_display_result;
@@ -180,18 +192,6 @@ begin
 				end
 		endcase
 	end
-	
-	/*clk_div_counter <= clk_div_counter + 1;
-	if(clk_div_counter == 0) begin
-		counter <= counter + 1;		
-	end
-	//keypress counter
-	if (keypad_key_pressed && (keypad_key_pressed  != keypad_key_pressed_prev))
-	begin
-		keypress_counter <= keypress_counter + 1;
-		//TODO increment my number register
-	end
-	keypad_key_pressed_prev <= keypad_key_pressed;*/
 end
 
 assign LED = {~reset, 1'b0, keypad_key_pressed, 1'b0, state};
