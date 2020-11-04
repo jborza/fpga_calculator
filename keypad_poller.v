@@ -27,8 +27,8 @@ reg [2:0] state;
 
 reg [15:0] timer_counter;
 localparam [15:0] 
-	ticks_hold = 19'd12000,     // 1 ms
-	ticks_debounce = 19'd12000; // 1 ms
+	ticks_hold = 19'd24000,     // 2 ms
+	ticks_debounce = 19'd120000; // 10 ms
 
 // rotate column (0001, 0010, 0100, 1000)
 // check if we get any output - if not, rotate again
